@@ -5,7 +5,7 @@ pipeline {
     environment {
 
         AWS_REGION = "eu-north-1"
-        EKS_CLUSTER = "wonderful-rock-mountain"
+        EKS_CLUSTER = "serious-classical-ant"
 
     }
 
@@ -51,7 +51,7 @@ pipeline {
                     sh '''
                     aws eks update-kubeconfig \
                     --region eu-north-1 \
-                    --name wonderful-rock-mountain
+                    --name serious-classical-ant
 
                     kubectl get nodes
 
