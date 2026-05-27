@@ -16,7 +16,7 @@ pipeline {
             steps {
 
                 git branch: 'main',
-                    url: 'https://github.com/YOUR_GITHUB_REPOSITORY.git'
+                    url: 'https://github.com/Sujay9939/Food-delevery-Website'
             }
         }
 
