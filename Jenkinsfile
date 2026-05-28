@@ -1,127 +1,112 @@
-
----
-
-# Correct Jenkinsfile
-
-Copy ONLY this into the actual `Jenkinsfile`:
-
-:::writing{variant="document" id="55184"}
 pipeline {
 
-    agent any
+```
+agent any
 
-    environment {
+environment {
 
-        AWS_REGION = "eu-north-1"
-        EKS_CLUSTER = "serious-classical-ant"
+    AWS_REGION = "eu-north-1"
+    EKS_CLUSTER = "serious-classical-ant"
 
-        IMAGE_NAME = "sujaygope9939/food-delivery-app"
-        IMAGE_TAG = "v1"
+    IMAGE_NAME = "sujaygope9939/food-delivery-app"
+    IMAGE_TAG = "v1"
+}
+
+stages {
+
+    stage('Checkout') {
+
+        steps {
+
+            git branch: 'main',
+                url: 'https://github.com/Sujay9939/Food-delevery-Website'
+        }
     }
 
-    stages {
+    stage('Build Maven') {
 
-        stage('Checkout') {
+        steps {
 
-            steps {
-
-                git branch: 'main',
-                    url: 'https://github.com/Sujay9939/Food-delevery-Website'
-            }
+            sh 'mvn clean package'
         }
+    }
 
-        stage('Build Maven') {
+    stage('Build Docker Image') {
 
-            steps {
+        steps {
 
-                sh 'mvn clean package'
-            }
+            sh '''
+            docker build \
+            -t $IMAGE_NAME:$IMAGE_TAG .
+            '''
         }
+    }
 
-        stage('Build Docker Image') {
+    stage('Docker Login & Push') {
 
-            steps {
+        steps {
+
+            withCredentials([usernamePassword(
+                credentialsId: 'docker-hub-creds',
+                usernameVariable: 'DOCKER_USER',
+                passwordVariable: 'DOCKER_PASS'
+            )]) {
 
                 sh '''
-                docker build \
-                -t $IMAGE_NAME:$IMAGE_TAG .
+                echo "$DOCKER_PASS" | docker login \
+                -u "$DOCKER_USER" \
+                --password-stdin
+
+                docker push $IMAGE_NAME:$IMAGE_TAG
                 '''
             }
         }
-
-        stage('Docker Login & Push') {
-
-            steps {
-
-                withCredentials([usernamePassword(
-                    credentialsId: 'docker-hub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-
-                    sh '''
-                    echo "$DOCKER_PASS" | docker login \
-                    -u "$DOCKER_USER" \
-                    --password-stdin
-
-                    docker push $IMAGE_NAME:$IMAGE_TAG
-                    '''
-                }
-            }
-        }
-
-        stage('Deploy To EKS') {
-
-            steps {
-
-                withAWS(
-                    credentials: 'aws-creds',
-                    region: 'eu-north-1'
-                ) {
-
-                    sh '''
-                    aws eks update-kubeconfig \
-                    --region $AWS_REGION \
-                    --name $EKS_CLUSTER
-
-                    kubectl get nodes
-
-                    kubectl set image deployment/food-delivery \
-                    food-delivery=$IMAGE_NAME:$IMAGE_TAG
-
-                    kubectl rollout status deployment/food-delivery \
-                    --timeout=300s
-                    '''
-                }
-            }
-        }
     }
 
-    post {
+    stage('Deploy To EKS') {
 
-        success {
+        steps {
 
-            echo 'Application deployed successfully'
-        }
+            withAWS(
+                credentials: 'aws-creds',
+                region: 'eu-north-1'
+            ) {
 
-        failure {
+                sh '''
+                aws eks update-kubeconfig \
+                --region $AWS_REGION \
+                --name $EKS_CLUSTER
 
-            echo 'Deployment failed'
-        }
+                kubectl get nodes
 
-        always {
+                kubectl set image deployment/food-delivery \
+                food-delivery=$IMAGE_NAME:$IMAGE_TAG
 
-            cleanWs()
+                kubectl rollout status deployment/food-delivery \
+                --timeout=300s
+                '''
+            }
         }
     }
 }
-:::
 
----
+post {
 
-# Important
+    success {
 
-Your Jenkinsfile should start directly with:
+        echo 'Application deployed successfully'
+    }
 
-```groovy
-pipeline {
+    failure {
+
+        echo 'Deployment failed'
+    }
+
+    always {
+
+        cleanWs()
+    }
+}
+```
+
+}
