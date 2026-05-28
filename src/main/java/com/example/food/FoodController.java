@@ -9,7 +9,6 @@ import java.util.*;
 @CrossOrigin("*")
 public class FoodController {
 
-```
 @GetMapping("/menu")
 public List<Map<String, Object>> getMenu() {
 
@@ -100,6 +99,5 @@ private int getPrice(String item) {
         default -> 100;
     };
 }
-```
 
 }
