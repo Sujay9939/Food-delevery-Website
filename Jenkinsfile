@@ -5,7 +5,7 @@ agent any
 environment {
 
     AWS_REGION = "eu-north-1"
-    EKS_CLUSTER = "serious-classical-ant"
+    EKS_CLUSTER = "attractive-funk-dolphin"
 
     IMAGE_NAME = "sujaygope9939/food-delivery-app"
     IMAGE_TAG = "v1"
