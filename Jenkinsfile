@@ -78,10 +78,10 @@ stages {
 
                 kubectl get nodes
 
+                kubectl apply -f k8s/
+
                 kubectl set image deployment/food-delivery \
                 food-delivery=$IMAGE_NAME:$IMAGE_TAG
-
-                kubectl apply -f k8s/
 
                 kubectl rollout status deployment/food-delivery \
                 --timeout=300s
