@@ -1,3 +1,4 @@
+```yaml id="mjlwmr"
 apiVersion: apps/v1
 kind: Deployment
 
@@ -21,7 +22,7 @@ spec:
 
       - name: food-delivery
 
-        image: sujay9939/food-delivery-app:latest
+        image: sujaygope9939/food-delivery-app:latest
 
         imagePullPolicy: Always
 
@@ -53,3 +54,4 @@ spec:
 
           initialDelaySeconds: 30
           periodSeconds: 10
+```
