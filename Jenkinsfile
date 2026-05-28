@@ -1,3 +1,4 @@
+```groovy
 pipeline {
 
     agent any
@@ -7,6 +8,8 @@ pipeline {
         AWS_REGION = "eu-north-1"
         EKS_CLUSTER = "serious-classical-ant"
 
+        IMAGE_NAME = "sujaygope9939/food-delivery-app"
+        IMAGE_TAG = "v1"
     }
 
     stages {
@@ -34,8 +37,29 @@ pipeline {
 
                 sh '''
                 docker build \
-                -t food-delivery-app:v1 .
+                -t $IMAGE_NAME:$IMAGE_TAG .
                 '''
+            }
+        }
+
+        stage('Docker Login & Push') {
+
+            steps {
+
+                withCredentials([usernamePassword(
+                    credentialsId: 'docker-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    sh '''
+                    echo $DOCKER_PASS | docker login \
+                    -u $DOCKER_USER \
+                    --password-stdin
+
+                    docker push $IMAGE_NAME:$IMAGE_TAG
+                    '''
+                }
             }
         }
 
@@ -50,12 +74,13 @@ pipeline {
 
                     sh '''
                     aws eks update-kubeconfig \
-                    --region eu-north-1 \
-                    --name serious-classical-ant
+                    --region $AWS_REGION \
+                    --name $EKS_CLUSTER
 
                     kubectl get nodes
 
-                    kubectl apply -f k8s/
+                    kubectl set image deployment/food-delivery \
+                    food-delivery=$IMAGE_NAME:$IMAGE_TAG
 
                     kubectl rollout status \
                     deployment/food-delivery \
@@ -84,3 +109,4 @@ pipeline {
         }
     }
 }
+```
