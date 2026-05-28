@@ -1,9 +1,3 @@
----
-
-# Your Jenkinsfile Should Start Directly Like This
-
-:::writing{variant="document" id="64218"}
-```groovy
 pipeline {
 
     agent any
