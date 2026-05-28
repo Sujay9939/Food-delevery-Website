@@ -1,3 +1,11 @@
+
+---
+
+# Correct Jenkinsfile
+
+Copy ONLY this into the actual `Jenkinsfile`:
+
+:::writing{variant="document" id="55184"}
 pipeline {
 
     agent any
@@ -52,8 +60,8 @@ pipeline {
                 )]) {
 
                     sh '''
-                    echo $DOCKER_PASS | docker login \
-                    -u $DOCKER_USER \
+                    echo "$DOCKER_PASS" | docker login \
+                    -u "$DOCKER_USER" \
                     --password-stdin
 
                     docker push $IMAGE_NAME:$IMAGE_TAG
@@ -81,8 +89,7 @@ pipeline {
                     kubectl set image deployment/food-delivery \
                     food-delivery=$IMAGE_NAME:$IMAGE_TAG
 
-                    kubectl rollout status \
-                    deployment/food-delivery \
+                    kubectl rollout status deployment/food-delivery \
                     --timeout=300s
                     '''
                 }
@@ -108,4 +115,13 @@ pipeline {
         }
     }
 }
-```
+:::
+
+---
+
+# Important
+
+Your Jenkinsfile should start directly with:
+
+```groovy
+pipeline {
