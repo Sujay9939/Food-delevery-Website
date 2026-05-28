@@ -1,3 +1,9 @@
+---
+
+# Your Jenkinsfile Should Start Directly Like This
+
+:::writing{variant="document" id="64218"}
+```groovy
 pipeline {
 
     agent any
@@ -46,7 +52,7 @@ pipeline {
             steps {
 
                 withCredentials([usernamePassword(
-                    credentialsId: 'docker-creds',
+                    credentialsId: 'docker-hub-creds',
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
