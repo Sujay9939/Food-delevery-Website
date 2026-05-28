@@ -10,7 +10,6 @@ import java.util.*;
 public class FoodController {
 
 ```
-// Food Menu API
 @GetMapping("/menu")
 public List<Map<String, Object>> getMenu() {
 
@@ -28,7 +27,6 @@ public List<Map<String, Object>> getMenu() {
     return menu;
 }
 
-// Place Order API
 @PostMapping("/order")
 public Map<String, Object> orderFood(
         @RequestParam String customerName,
@@ -56,7 +54,6 @@ public Map<String, Object> orderFood(
     return response;
 }
 
-// Order Status API
 @GetMapping("/status/{orderId}")
 public Map<String, String> getOrderStatus(
         @PathVariable String orderId) {
@@ -69,7 +66,6 @@ public Map<String, String> getOrderStatus(
     return status;
 }
 
-// Helper Method
 private Map<String, Object> createFoodItem(
         int id,
         String name,
@@ -88,7 +84,6 @@ private Map<String, Object> createFoodItem(
     return item;
 }
 
-// Price Calculator
 private int getPrice(String item) {
 
     return switch (item.toLowerCase()) {
