@@ -8,7 +8,7 @@ environment {
     EKS_CLUSTER = "attractive-funk-dolphin"
 
     IMAGE_NAME = "sujaygope9939/food-delivery-app"
-    IMAGE_TAG = "v1"
+    IMAGE_TAG = "${BUILD_NUMBER}"
 }
 
 stages {
